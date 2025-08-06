@@ -1,0 +1,137 @@
+TCL - TRANSACTION CONTROL LANGUAGES
+
+------------------------------------------------------------------
+COMMANDS : COMMIT , SAVEPOINT , ROLLBACK
+------------------------------------------------------------------
+Transaction states:
+
+Active state (executing read, write operations)
+
+Partially committed state (ended but waiting for system checks to determine success or failure)
+
+Committed state OR SUCCESSFULL (transaction succeeded)
+
+Failed state (transaction failed, must be rolled back)
+
+Terminated State (transaction leaves system)
+------------------------------------------------------------------
+
+PROPERTIES OF TRANSACTION
+Atomicity, Consistency, Isolation, Durability:
+
+------------------------------------------------------------------
+COMMIT
+
+SYNTAX : COMMIT;
+
+COMMIT command in SQL is used to save all the transaction-related changes permanently to the disk
+
+
+------------------------------------------------------------------
+SAVEPOINT
+
+SYNTAX : SAVEPOINT SAVEPOINT_NAME;
+
+Using the SAVEPOINT command in SQL, we can save these different parts of the same transaction using different names
+
+------------------------------------------------------------------
+ROLLBACK
+
+SYNTAX: ROLLBACK TO SAVEPOINT_NAME;
+
+
+While carrying a transaction, we must create savepoints to save different parts of the transaction. 
+According to the user's changing requirements, he/she can roll back the transaction to different savepoints
+
+------------------------------------------------------------------
+VIEW
+
+CREATE VIEW
+
+CREATE VIEW view_name AS SELECT column1, column2, ... FROM table_name WHERE condition;
+------------------------------------------------------------------
+SELECT VIEW
+
+SELECT * FROM view_name;
+------------------------------------------------------------------
+UPDATE VIEW
+
+UPDATE view_name SET value=x where condition;
+------------------------------------------------------------------
+DELETE VIEW
+
+DELETE FROM view_name where condition
+------------------------------------------------------------------
+DROP VIEW
+
+DROP view view_name;
+------------------------------------------------------------------
+DUAL - RDBMS (RELATIONAL DATABASE MANAGEMENT)
+
+DUAL : It is a table that is automatically created by Oracle Database along with the data dictionary.
+
+SELECT * FROM DUAL;
+
+select user from dual // 
+
+SELECT N1*N2/ N1+N2 /N1-N2/ N1/N2 FROM DUAL; //mathematical operation
+
+select 'saurav' as name from dual; //name - saurav	
+
+select power(4,2) as power from dual; //select power
+
+select length('application) from dual; // find length
+
+ select to_char(sysdate,'mm') from dual; //extract current month
+
+ select to_char(sysdate,'yyyy') from dual; //extract current year
+
+ select to_char(sysdate,'dd') from dual; //extract current day
+
+ select sysdate from dual;
+
+ select to_char(sysdate,'dd-mm-yyyy') from dual; //extract current date using formatting dd-mm-yyyy
+
+ select last_day(sysdate) from dual; //last day of this month
+
+SELECT TO_CHAR(SYSDATE, 'HH24:MI:SS') AS current_time FROM dual;  //extract current time
+
+
+  select systimestamp from dual; //select time stamp
+
+ select to_char(688,'$999') as new_format from dual; //change format
+
+ select 'hello' || 'wolrd' as msg from dual; // concatenation
+
+
+
+------------------------------------------------------------------
+
+DCL - DATA  CONTROL LANGUAGE
+
+CREATE USER user_name IDENTIFIED by "password";
+
+
+GRANT ALL ON tablename to user_name; // SO THAT USER CAN MODIFY THIS TABLE CREATED IN USER='SYSTEM' WITH EVERY PRIVELEGES
+
+GRANT SELECT,INSERT,DELETE ON tablename to user_name //GRANTING CERTAIN PRIVELEGES
+
+NOW LOGOUT AND LOGIN IN USER : user_name and password
+
+select * from system.tablename;
+
+delete from system.tablename where condition;
+
+update system.tablename set values where condition
+
+revoke all on tablename from user_name;
+
+revoke insert on tablename from user_name;
+
+
+
+
+
+
+------------------------------------------------------------------
+

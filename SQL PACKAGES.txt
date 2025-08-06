@@ -1,0 +1,261 @@
+A package will have two mandatory parts −
+
+-Package specification
+-Package body or definition
+-----------------------------------------------------------------------------------------------------
+All  objects placed in the specification are  called public  objects. 
+Any subprogram not in the package specification but coded in the package body is called a private object.
+-----------------------------------------------------------------------------------------------------
+SPECIFICATION SPECIFY OR DECLARES THE PROCEDURE OR FUNCTION OR TRIGGER OR CURSOR USED IN PACKAGE AS WELL AS THE VARIABLES,CONSTANTS ,EXCEPTIONS USED IN EACH OF THEM.
+
+BODY CONTAINS THE CODE TO THE SPECIFIED OBJECT
+
+RUN EACH PART AS SEPERATE ONE;
+
+IN PACKAGE BODY AND SPECIFICATION WHEREVER THERE IS END STATEMENT WE NEED 'END NAME' FOR PACKAGE,FUNCTION,PROCEDURE
+
+FUNCTION OR PROCEDURE CALL INCLUDES PACKAGE_NAME.P/FNAME()
+-----------------------------------------------------------------------------------------------------
+
+PACKAGE SPECIFICATION
+
+CREATE OR REPLACE PACKAGE package_name AS
+
+PROCEDURE procedure_name (varibales tablename.ATTRIBUTE % TYPE....);
+FUNCTION function_name( varibales tablename.ATTRIBUTE % TYPE....) RETURN DATATYPE;
+
+END package_name;
+
+		----------------------------
+PACKAGE BODY
+
+CREATE OR REPLACE PACKAGE BODY package_name AS
+ 	 		
+	PROCEDURE procedure_name (variable tablename.columnname.%TYPE....)
+	
+	AS/IS
+
+	<declaration  part>
+
+	BEGIN
+	
+	<body>
+        
+
+	EXCEPTION
+	
+        <exception block>
+
+	END procedure_name;
+	
+	----------------------------------
+
+	FUNCTION function_name ( variable tablename.columnname %TYPE....) RETURN DATATYPE
+
+	AS/IS
+
+	<declaration  part>
+
+	BEGIN
+
+	<body>
+		return variable;
+
+	END function_name;
+	----------------------------------
+
+END package_name;
+
+
+-------------------------------------------
+
+
+DECLARE
+
+	nvariable tablename.attribute % TYPE;
+	.
+	.
+	.
+
+BEGIN 
+
+	<read ip>
+
+	PACKAGE_NAME.procedure_name(variables);
+
+END;
+-------------------------
+
+DECLARE
+
+	nvariable table.attribute % TYPE;
+	.
+	.
+	.
+
+BEGIN 
+
+	<read ip>
+
+	variable:=PACKAGE_NAME.function_name(nvariable);
+
+END;
+----------------------------
+EXAMPLE:
+
+create or replace package p1 as
+
+procedure a(n student.name%type,c student.class%type,d student.dept%type,i student.rset_id%type,r student.roll_no%type,m student.marks%type,g student.grade%type);
+function b(na student.name%type) return number;
+
+end p1;
+/
+
+
+create or replace package body p1 as
+
+procedure a(n student.name%type,c student.class%type,d student.dept%type,i student.rset_id%type,r student.roll_no%type,m student.marks%type,g student.grade%type)
+is/as
+
+begin
+
+	insert into student values(n,c,d,i,r,m,g);
+
+end a;
+
+
+
+function b(na student.name%type) return number
+is
+
+mak number;
+
+begin
+
+	select marks into mak from student where name=na;
+	return mak;
+
+end b;
+
+end p1;
+
+/
+
+declare
+
+nm student.name%type;
+cl student.class%type;
+dep student.dept%type;
+id student.rset_id%type;
+rn student.roll_no%type;
+mk student.marks%type;
+gr student.grade%type;
+
+begin
+	nm:='&nm';
+	cl:='&cl';
+	dep:='&dep';
+	id:=&id;
+	rn:=&rn;
+	mk:=&mk;
+	gr:=&gr;
+	p1.a(nm,cl,dep,id,rn,mk,gr);
+end;
+/
+
+declare
+m1 student.name%type;
+g number;
+begin
+	m1:='&m1';
+	g:=p1.b(m1);
+	dbms_output.put_line('mark of '||m1||' is '||g);
+	
+end;
+/
+
+------------------------------------------------------------------------------
+CURSOR IN PACKAGE
+
+Create or replace package pkg_Util as
+        cursor c_emp is select * from teacher;
+        r_emp c_emp%ROWTYPE;
+       procedure p_printEmps;
+end;
+/
+
+Create or replace package body pkg_Util as
+procedure p_printEmps is
+    begin
+          open pkg_Util.c_emp;
+          loop
+                 fetch pkg_Util.c_emp into pkg_Util.r_emp;
+                 exit when pkg_Util.c_emp%NOTFOUND;
+                 DBMS_OUTPUT.put_line(pkg_Util.r_emp.t_name);
+          end loop;
+          close pkg_Util.c_emp;
+    end;
+end pkg_Util;
+/
+
+declare
+begin
+pkg_Util.p_printEmps;
+end;
+
+/
+-----------------------------------------------------------------
+
+CURSOR IN PACKAGE
+
+create or replace package p1 as
+	cursor c is select * from saurav;
+	c1 c%rowtype;
+	procedure p2;
+end;
+/
+
+create or replace package body p1 as
+	procedure p2 is
+		begin
+			open p1.c;
+			loop
+				fetch p1.c into p1.c1;
+					exit when p1.c%notfound;
+				dbms_output.put_line('name is '||p1.c1.name);
+			end loop;
+			close p1.c;
+		end ;
+end p1;
+/
+	
+
+ declare
+ begin
+	p1.p2();
+end;
+/	
+
+-----------------------------------------------------------------
+TRIGGER IN PACKAGE
+
+create or replace package p1 as
+ procedure p2;
+end p1;
+/
+
+create or replace package body p1 as
+procedure p2 as
+begin
+	dbms_output.put_line('helllooo');
+end;
+end p1;
+/
+
+create or replace trigger t1
+before insert on saurav
+for each row
+begin
+	p1.p2();
+end;
+/

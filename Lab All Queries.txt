@@ -1,0 +1,571 @@
+
+
+
+ CREATE SCHEMA AUTHORIZATION u2103191;
+
+ CREATE TABLE STAFF(STAFF_ID VARCHAR2(10) PRIMARY KEY,NAME VARCHAR2(20));
+ CREATE TABLE REPORTS(USER_ID VARCHAR2(10),REG_NO VARCHAR2(10) PRIMARY KEY,BOOK_NO NUMBER(10),ISSUE VARCHAR2(30));
+ CREATE TABLE READERS(USER_ID VARCHAR2(10) PRIMARY KEY,EMAIL VARCHAR2(20) UNIQUE,FIRST_NAME VARCHAR2(20),LAST_NAME VARCHAR2(20),ADDRESS VARCHAR2(20));
+ CREATE TABLE READERS1(USER_1D VARCHAR(20) PRIMARY KEY,PHONE NUMBER(20) DEFAULT 0);
+ CREATE TABLE BOOKS(ISBN VARCHAR2(10) PRIMARY KEY,AUTH_NO VARCHAR2(20),TITLE NUMBER(20),EDITION DATE,CATEGORY VARCHAR(20),PRICE NUMBER(10));
+ CREATE TABLE RETURN(RESERVE_DATE DATE,ISSUE_DATE DATE,RETURN_DATE DATE,DUE_DATE DATE,USER_ID VARCHAR2(10),ISBN VARCHAR2(20),CONSTRAINT PK PRIMARY KEY(RESERVE_DATE,USER_ID),CONSTRAINT FK FOREIGN KEY(ISBN) REFERENCES BOOKS(ISBN));
+ CREATE TABLE PUBLISHER(PUBLISHER_ID VARCHAR2(20) PRIMARY KEY,YEAR_OF_PUBLICATION NUMBER(10),NAME VARCHAR2(20));
+ CREATE TABLE AUTHENTICATION_SYSTEM(LOGIN_ID VARCHAR2(20) PRIMARY KEY,PASSWORD VARCHAR2(20));
+
+ CREATE TABLE MANAGES(REG_NO VARCHAR2(10) PRIMARY KEY,STAFF_ID VARCHAR2(10));
+ CREATE TABLE LOGIN(STAFF_ID VARCHAR2(10) PRIMARY KEY,LOGIN_ID VARCHAR2(20));
+ CREATE TABLE PUBLISHES(PUBLISHER_ID VARCHAR2(20) PRIMARY KEY,ISBN VARCHAR2(20));
+ CREATE TABLE MAINTAIN(ISBN VARCHAR2(20) PRIMARY KEY,STAFF_ID VARCHAR2(10));
+ CREATE TABLE KEEPS_TRACK_OF(STAFF_ID VARCHAR2(10),USER_ID VARCHAR2(10),CONSTRAINT PK1 PRIMARY KEY(STAFF_ID,USER_ID));
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+-----FOR ALTERING USING MODIFY STATEMENTS------------------
+
+***ALTER TABLE READERS1 MODIFY PHONE NUMBER(10) DEFAULT 0;
+
+    [ ALTER TABLE table_name 
+   MODIFY attribute_name DATATYPE DEFAULT default_value;]
+
+
+****CANNOT USE SAME CONSTRAINT NAME IN DATABASE
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   ALTER TABLE RETURN ADD FINE NUMBER DEFAULT 0;
+   ALTER TABLE BOOKS ADD CURRENTLY_AVAILABLE_COPIES NUMBER;
+   ALTER TABLE READERS MODIFY LAST_NAME VARCHAR2(20);
+   SELECT TABLE_NAME FROM USER_TABLES;
+   ALTER TABLE REPORTS ADD CONSTRAINT FK1 FOREIGN KEY(USER_ID) REFERENCES READERS(USER_ID);
+   DROP TABLE MAINTAIN;
+  
+
+ 
+  INSERT INTO READERS VALUES('L001','tom@gmail.com','FRANK','TOM','NY',422544);
+   INSERT INTO READERS VALUES('L002','bob@gmail.com','ELLIOT','BOB','NY',435678);
+   INSERT INTO READERS VALUES('L003','ann@gmail.com','CALF','ANN','DALLAS',234909);
+    INSERT INTO READERS VALUES('L004','harry@gmail.com','POTTER','HARRY','SEATTLE',112466);
+     INSERT INTO READERS VALUES('L005','smith@gmail.com','DANIEL','HAIK','SEATTLE',982222);
+     INSERT INTO READERS VALUES('L006','dick@gmail.com','XAME','DICK','NJ',876987);
+
+
+   SET LINESIZE 200;  
+
+  [[[[[ALTER TABLE BOOKS DROP COLUMN COLUMNANME;]]]]
+
+  ALTER TABLE BOOKS ADD PUBLISHER VARCHAR2(20);
+ ALTER TABLE BOOKS ADD CURRENTLY_AVAILABLE_COPIES NUMBER(20);
+ ALTER TABLE BOOKS ADD PUBLISHER VARCHAR2(20);
+
+ INSERT INTO BOOKS VALUES('12345','A001','Fundamentals of JAVA',NULL,NULL,NULL,1,'Pearson',NULL);
+ INSERT INTO BOOKS VALUES('54321','A002','Computer Networks',NULL,NULL,NULL,5,'Pearson',NULL);
+ INSERT INTO BOOKS VALUES('34561','A002','Operating System',NULL,NULL,NULL,10,'MK',NULL);
+ INSERT INTO BOOKS VALUES('16543','A004','Microprocessors',NULL,NULL,NULL,10,'Wiley',NULL);
+ INSERT INTO BOOKS VALUES('98765','A005','Internet of Things',NULL,NULL,NULL,8,'McKane',NULL);
+ INSERT INTO BOOKS VALUES('56789','A005','AI',NULL,NULL,NULL,3,'BPB',NULL);
+ 
+ 
+
+
+ INSERT INTO RETURN VALUES(DATE '2023-09-10',DATE '2023-09-10',NULL,DATE '2023-09-30','L006',56789,0);
+ INSERT INTO RETURN VALUES(DATE '2023-09-10',DATE '2023-09-10',DATE '2023-10-01',DATE '2023-09-30','L005',98765,8);
+ INSERT INTO RETURN VALUES(DATE '2023-09-11',NULL,NULL,NULL,'L005',16543,0);
+ INSERT INTO RETURN VALUES(DATE '2023-09-12',DATE '2023-09-14',NULL,DATE '2023-10-04','L004',56789,0);
+ INSERT INTO RETURN VALUES(DATE '2023-09-12',DATE '2023-09-18',DATE '2023-09-25',DATE '2023-10-08','L001',12345,20);
+ INSERT INTO RETURN VALUES(DATE '2023-09-13',NULL,NULL,NULL,'L001',56789,0);
+
+
+
+5)SELECT * FROM READERS;
+6)SELECT EMAIL,ADDRESS FROM READERS;
+7) SELECT * FROM READERS WHERE ADDRESS='NY';
+8) SELECT * FROM BOOKS WHERE PUBLISHER='Pearson';
+10) SELECT * FROM BOOKS WHERE CURRENTLY_AVAILABLE_COPIES=5;
+9) SELECT AUTH_NO FROM BOOKS WHERE PUBLISHER='Pearson' AND AUTH_NO=(SELECT AUTH_NO FROM BOOKS WHERE PUBLISHER='MK');
+11A) SELECT * FROM READERS WHERE FIRST_NAME LIKE 'H%';
+ 11B) SELECT * FROM READERS WHERE LAST_NAME LIKE 'H%';
+12 A)SELECT * FROM READERS WHERE LAST_NAME LIKE '%K';
+12 B)SELECT * FROM READERS WHERE FIRST_NAME LIKE '%K';
+
+SELECT FIRST_NAME,LAST_NAME FROM READERS ORDER BY FIRST_NAME ASC;
+
+
+*******************************************************
+
+  UPDATE READERS SET PHONE=422544 WHERE USER_ID='L001';
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  SET LINESIZE 200;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+******************************************************************************
+(DATE '2023-09-02',)- DATE FROMAT
+   
+SET SERVEROUTPUT ON;- TO SAVE TABLE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+DAY 3
+
+13a)SELECT BOOKS.TITLE FROM BOOKS JOIN RETURN ON BOOKS.ISBN=RETURN.ISBN WHERE RETURN.ISSUE_DATE IS NOT NULL AND RETURN.RETURN_DATE IS NULL;
+
+13b)SELECT READERS.USER_ID,READERS.FIRST_NAME,READERS.LAST_NAME FROM READERS JOIN RETURN ON READERS.USER_ID=RETURN.USER_ID JOIN BOOKS ON BOOKS.ISBN = RETURN.ISBN WHERE BOOKS.TITLE='AI';
+
+13c)SELECT SUM(FINE) FROM RETURN WHERE TO_CHAR(DUE_DATE,'mm')=TO_CHAR(SYSDATE,'mm');
+
+13d)SELECT READERS.USER_ID,READERS.FIRST_NAME,READERS.LAST_NAME FROM READERS JOIN RETURN ON READERS.USER_ID=RETURN.USER_ID WHERE RETURN_DATE > DUE_DATE OR SYSDATE > DUE_DATE
+
+13e)SELECT USER_ID,FIRST_NAME,LAST_NAME FROM READERS WHERE USER_ID NOT IN(SELECT USER_ID FROM RETURN WHERE ISSUE_DATE IS NOT NULL);
+
+13f)SELECT AUTH_NO,COUNT(AUTH_NO) FROM BOOKS GROUP BY AUTH_NO HAVING COUNT(AUTH_NO)>1; 
+
+14a)SELECT FIRST_NAME,LAST_NAME FROM READERS ORDER BY FIRST_NAME ASC;
+
+14b)SELECT BOOKS.TITLE,MAX(RETURN.FINE) FROM RETURN FULL JOIN BOOKS ON RETURN.ISBN=BOOKS.ISBN GROUP BY BOOKS.TITLE ;
+
+
+15a)SELECT COUNT(AUTH_NO),AUTH_NO FROM BOOKS GROUP BY AUTH_NO;
+15b)SELECT SUM(FINE) FROM RETURN WHERE DUE_DATE<=DATE '2023-10-01';
+15c)SELECT COUNT(*) AS TOTALRECORDS FROM READERS;
+15d)SELECT COUNT(PUBLISHER),PUBLISHER FROM BOOKS GROUP BY PUBLISHER;
+
+
+ 16 A)  COMMIT;
+	SAVEPOINT A;
+	DELETE FROM READERS WHERE USER_ID NOT IN(SELECT USER_ID FROM RETURN WHERE ISSUE_DATE IS NOT NULL);
+	ROLLBACK TO A;
+     
+18 A)	CREATE VIEW READER_VW AS(SELECT USER_ID,LAST_NAME,ADDRESS AS CITY FROM READERS);
+        SELECT * FROM READER_VW;
+18 B)   UPDATE READER_VW SET CITY='NEW YORK' WHERE CITY='NY';
+18 C) 	DELETE FROM READER_VW WHERE LAST_NAME='ANN';
+18 D) 	DELETE READER_VW;
+
+19 A)SELECT POWER(16, 5) FROM DUAL;
+19 B) SELECT LENGTH('APPLICATION') FROM DUAL;
+19 C) SELECT SYSDATE,LAST_DAY(SYSDATE) "Last",LAST_DAY(SYSDATE) - SYSDATE "Days Left" FROM DUAL;
+19 C) SELECT LAST_DAY(SYSDATE) "LAST DATE" FROM DUAL;
+19 D) SELECT TO_CHAR(65432,'$99999') FROM DUAL;
+19 E)SELECT SYSTIMESTAMP FROM DUAL;
+19 F)SELECT COUNT(TITLE) FROM BOOKS;
+
+******************************************************************************************************************
+DAY 5 
+
+20)a set serveroutput on;
+declare
+ a number;
+ f number;
+ i number;
+begin
+ a:=&a;
+ f:=1;
+ i:=1;
+ if a=0 then
+  dbms_output.put_line('Factorial is 1');
+ else
+  while i<=a loop
+   f:=f*i;
+   i:=i+1;
+  end loop;
+ end if;
+ dbms_output.put_line('Factorial is :' || f);
+end;
+
+20)b
+declare
+ a varchar2(20);
+ b varchar2(20);
+ l number;
+ i number;
+begin
+ a:='&a';
+ l:=length(a);
+ for i in reverse 1..l loop
+   b:=b||substr(a,i,1);
+ end loop;
+ dbms_output.put_line('Reversed string is:'|| b);
+end; 
+ 
+  
+21)a
+create table areas(radius number,area number);
+declare 
+ a number;
+ i number;
+begin
+ for i in 5..15 loop
+    a:=3.14*i*i;
+    insert into areas(radius,area) values(i,a);
+ end loop;
+end;
+ 
+21 b)
+create table bank(acc varchar2(20),name varchar2(20),balance number);
+
+insert into bank values(1234,'micheal jackson',5000);
+insert into bank values(2345,'justin beiber',1000);
+insert into bank values(3456,'rihanna',1500);
+insert into bank values(4567,'billie ellish',3000);
+insert into bank values(5678,'fejo',200);
+
+declare 
+ minbal number:=1000;
+ accnum varchar2(20);
+ amnt number;
+ bal number;
+begin
+  accnum:=&accnum;
+  select balance into bal from bank where acc=accnum;
+  amnt:=&amnt;
+  update bank set balance=balance-amnt where acc=accnum;
+  bal:=bal-amnt;
+ if(bal<minbal) then
+   update bank set balance=balance-100 where acc=accnum;
+   bal:=bal-100;
+   dbms_output.put_line('Balance is :' || bal);
+ else 
+    dbms_output.put_line('Balance is :' || bal);
+ end if;
+end;
+----------------------------------------------------------------------------------------------
+ 22 A)update RETURN set fine=250 where USER_ID='L006';	
+	 update RETURN set fine=450 where ISBN='16543';
+	 update RETURN set fine=350 where ISBN='98765';
+
+CREATE OR REPLACE PROCEDURE reduce(id IN VARCHAR2)
+AS
+f number;
+BEGIN
+select FINE into f from RETURN where USER_ID=id;
+if(f>100) then
+ update RETURN set FINE=FINE-(0.05*FINE) where USER_ID=id;
+end if;
+END;
+
+DECLARE
+user varchar2(10);
+BEGIN
+user:='&user';
+reduce(user);
+END;
+		
+22B)
+ALTER TABLE RETURN ADD STATUS VARCHAR2(25);
+CREATE OR REPLACE PROCEDURE SETUP
+AS
+BEGIN
+update RETURN set STATUS='NOT RETURNED' where RETURN_DATE IS NULL AND DUE_DATE<=SYSDATE;
+END;
+
+DECLARE
+BEGIN
+SETUP;
+END;
+
+22 c)
+CREATE OR REPLACE FUNCTION showit(id varchar2)RETURN NUMBER
+AS
+total NUMBER;
+BEGIN
+SELECT SUM(CURRENTLY_AVAILABLE_COPIES) into total from BOOKS where AUTH_NO=id;
+RETURN(total);
+END;
+
+DECLARE
+user varchar2(20);
+n number;
+BEGIN
+user:='&user';
+n:=showit(user);
+dbms_output.put_line('Number is ' || n);
+END;
+
+22 D)
+CREATE OR REPLACE FUNCTION readdate(id varchar2,user varchar2)RETURN DATE
+AS
+d DATE;
+BEGIN
+SELECT RETURN_DATE into d from RETURN where USER_ID=id and ISBN=user;
+RETURN d;
+END;
+
+DECLARE
+userid varchar2(10);
+isbn varchar2(20);
+da DATE;
+BEGIN
+userid:='&userid';
+isbn:='&isbn';
+da:=readdate(userid,isbn);
+dbms_output.put_line('RETURN DATE IS ' || da);
+END;
+
+----------------------------------------------------------------------------------------------
+DAY 7	
+
+23 A B C D)
+DECLARE
+CURSOR cs IS
+ SELECT FINE FROM RETURN WHERE FINE<=200 FOR UPDATE NOWAIT;
+vs cs%ROWTYPE;
+cnt number:=0;
+BEGIN
+OPEN cs;
+LOOP
+ FETCH cs INTO vs;
+ EXIT WHEN cs%NOTFOUND;
+if(vs.fine<100) then
+ UPDATE RETURN SET FINE=100 WHERE CURRENT OF cs;
+ cnt:= cnt+1;
+elsif(vs.fine>=100 and vs.fine<150 )then
+ UPDATE RETURN SET FINE=150 WHERE CURRENT OF cs;
+ cnt:= cnt+1;
+elsif(vs.fine>=150 and vs.fine<200 )then
+ UPDATE RETURN SET FINE=150 WHERE CURRENT OF cs;
+ cnt:= cnt+1;
+end if;
+END LOOP;
+dbms_output.put_line('TABLES UPDATED ARE:' || cnt);
+CLOSE cs;
+END;
+/
+
+25 a b c)
+DECLARE
+CURSOR css IS
+ SELECT CURRENTLY_AVAILABLE_COPIES FROM BOOKS FOR UPDATE NOWAIT;
+vss css%ROWTYPE;
+BEGIN
+OPEN css;
+LOOP
+ FETCH css INTO vss;
+ EXIT WHEN css%NOTFOUND;
+
+if(vss.CURRENTLY_AVAILABLE_COPIES<5) then
+ UPDATE BOOKS SET CURRENTLY_AVAILABLE_COPIES=8 WHERE CURRENT OF css;
+
+elsif(vss.CURRENTLY_AVAILABLE_COPIES>=5 and vss.CURRENTLY_AVAILABLE_COPIES<10 )then
+ UPDATE BOOKS SET CURRENTLY_AVAILABLE_COPIES =12 WHERE CURRENT OF css;
+
+elsif(vss.CURRENTLY_AVAILABLE_COPIES>=10 and vss.CURRENTLY_AVAILABLE_COPIES <15 )then
+ UPDATE BOOKS SET CURRENTLY_AVAILABLE_COPIES=17 WHERE CURRENT OF css;
+end if;
+END LOOP;
+CLOSE css;
+END;
+/
+
+24)
+ DECLARE
+CURSOR CURS_NEW IS SELECT DUE_DATE,ISSUE_DATE,ISBN FROM RETURN WHERE ISBN=(SELECT ISBN FROM RETURN GROUP BY ISBN HAVING COUNT(RESERVE_DATE)>=3 )FOR UPDATE NOWAIT;
+NEW_REC CURS_NEW%ROWTYPE;
+BEGIN
+OPEN CURS_NEW;
+LOOP
+
+	FETCH  CURS_NEW INTO NEW_REC;
+		EXIT WHEN CURS_NEW%NOTFOUND;
+		UPDATE RETURN SET DUE_DATE=ISSUE_DATE+15 WHERE CURRENT OF CURS_NEW; 
+END LOOP;
+CLOSE CURS_NEW;
+END;
+/
+
+--------------------------------------------------------------------------
+
+DAY 8
+
+26)
+CREATE OR REPLACE TRIGGER dates
+BEFORE INSERT OR UPDATE OF DUE_DATE ON RETURN
+FOR EACH ROW
+WHEN (NEW.DUE_DATE<SYSDATE)
+BEGIN
+ dbms_output.put_line('DUE DATE EXCEEDED CURRENT DATE ');
+END;
+/
+ 
+DROP TRIGGER dates;
+
+INSERT INTO RETURN VALUES(DATE '2023-08-12',DATE '2023-08-08',DATE '2023-09-02',DATE '2023-11-14','L002',98765,8,null);
+
+
+
+INSERT INTO RETURN VALUES(DATE '2023-08-11',DATE '2023-08-08',DATE '2023-09-02',DATE '2023-11-30','L002',98765,501,null);
+
+
+
+27b)set serveroutput on;
+create or replace trigger tot_fine
+before delete or update or insert on RETURN
+for each row
+when(new.ISBN>0)
+declare
+str1 varchar2(50);
+str2 varchar2(50);
+no1 number;
+sum1 number;
+begin
+str2:=:new.USER_ID;
+dbms_output.put_line(str2);
+select sum(FINE) into sum1 from RETURN where USER_ID=str2 group by USER_ID;
+no1:=:new.FINE;
+sum1:=sum1+no1;
+if sum1>=500 then
+select FIRST_NAME into str1 from READERS where USER_ID=str2;
+dbms_output.put_line('Reader'||str1|| ' has fine more than 500');
+end if;
+end;
+/
+INSERT INTO RETURN VALUES(DATE '2023-08-12',DATE '2023-08-08',DATE '2023-09-02',DATE '2023-11-30','L005',98765,501,null);
+
+28c)
+set serveroutput on;
+create or replace trigger tot_fine
+before delete or update or insert on RETURN
+for each row
+when(new.ISBN>0)
+declare
+str1 varchar2(50);
+str3 varchar2(50);
+str2 number;
+no1 number;
+sum1 number;
+begin
+str2:=:new.ISBN;
+str3:=:new.USER_ID;
+dbms_output.put_line(str2);
+select count(RESERVE_DATE) into sum1 from RETURN where ISBN=str2 group by ISBN;
+sum1:=sum1+1;
+if sum1>2 then
+select FIRST_NAME into str1 from READERS where USER_ID=str3;
+dbms_output.put_line('Reader'||str1|| ' has book which is reserved more than twice');
+end if;
+end;
+
+INSERT INTO RETURN VALUES(DATE '2023-08-13',DATE '2023-08-08',DATE '2023-09-02',DATE '2023-11-30','L005',56789,501,null);
+
+29d)
+set serveroutput on;
+create or replace trigger tot_fine
+before delete or update or insert on RETURN
+for each row
+when(new.ISBN>0)
+declare
+str1 varchar2(50);
+str3 varchar2(50);
+str2 number;
+no1 number;
+sum1 number;
+begin
+str2:=:new.ISBN;
+str3:=:new.USER_ID;
+dbms_output.put_line(str2);
+select count(RESERVE_DATE) into sum1 from RETURN where USER_ID=str3 group by USER_ID;
+sum1:=sum1+1;
+if sum1>=3 then
+select FIRST_NAME into str1 from READERS where USER_ID=str3;
+dbms_output.put_line('Reader'||str1|| ' has reached maximum reserves of 3');
+end if;
+end;	
+INSERT INTO RETURN VALUES(DATE '2023-08-14',DATE '2023-08-08',DATE '2023-09-02',DATE '2023-11-30','L005',56789,501,null);
+
+
+-----------------------------------------------------
+30A B)
+
+create or replace package book_t AS
+
+   PROCEDURE a_book(isb books.ISBN%TYPE,auth books.AUTH_NO%TYPE,titl books.TITLE%TYPE,edi books.EDITION%TYPE,cat books.CATEGORY%TYPE,pri books.PRICE%TYPE,cur books.CURRENTLY_AVAILABLE_COPIES%TYPE,pub books.PUBLISHER%TYPE);
+
+   FUNCTION new_date(Rid return.USER_ID%TYPE,Rd return.RESERVE_DATE%TYPE) return date;
+end book_t;
+
+
+
+create or replace package body book_t AS
+
+   PROCEDURE a_book(isb books.ISBN%TYPE,auth books.AUTH_NO%TYPE,titl books.TITLE%TYPE,edi books.EDITION%TYPE,cat books.CATEGORY%TYPE,pri books.PRICE%TYPE,cur books.CURRENTLY_AVAILABLE_COPIES%TYPE,pub books.PUBLISHER%TYPE) 
+    IS
+    id number;
+   BEGIN
+     insert into books values(isb,auth,titl,edi,cat,pri,cur,pub);
+   END a_book;
+
+FUNCTION new_date(Rid return.USER_ID%TYPE,Rd return.RESERVE_DATE%TYPE) return date IS
+D date;
+Begin
+select DUE_DATE into D from return where USER_ID=Rid and RESERVE_DATE=Rd;
+D:=D+5;
+Return(D);
+end new_date;
+
+end book_t;
+
+Declare
+Bt books.TITLE%TYPE;
+Be books.EDITION%TYPE;
+Ba books.AUTH_NO%TYPE;
+Bis books.ISBN%TYPE;
+Bc books.CATEGORY%TYPE;
+Bp books.PRICE%TYPE;
+Bca books.CURRENTLY_AVAILABLE_COPIES%TYPE;
+Bpl books.PUBLISHER%TYPE;
+Begin
+
+Bt:='&Bt';
+Be:=&Be;
+Ba :='&Ba';
+Bis:='&Bis';
+Bc:='&Bc';
+Bp:=&Bp;
+Bca:=&Bca;
+Bpl:='&Bpl';
+book_t.a_book(Bis,Ba,Bt,Be,Bc,Bp,Bca,Bpl);
+End;
+
+
+Declare
+Rdate date;
+Rid return.USER_ID%TYPE;
+Rd return.RESERVE_DATE%TYPE;
+Begin
+Rid:='&Rid';
+Rd:=&Rd;
+Rdate:=book_t.new_date(Rid,Rd);
+Update return set DUE_DATE=Rdate where USER_ID=Rid and RESERVE_DATE=Rd;
+End
+
+
+---------------------------------------------------
+
+
+
+
+
+
+ 57  /
+Enter value for bt: EMPIRE OF SA
+old  35: Bt:='&Bt';
+new  35: Bt:='EMPIRE OF SAURAV';
+Enter value for be: '21-09-2022'
+old  36: Be:='&Be';
+new  36: Be:=''21-09-2022'';
+Enter value for ba: A0009
+old  37: Ba :='&Ba';
+new  37: Ba :='A0009';
+Enter value for bis: 0007
+old  38: Bis:='&Bis';
+new  38: Bis:='0007';
+Enter value for bc: HORROR
+old  39: Bc:='&Bc';
+new  39: Bc:='HORROR';
+Enter value for bp: 10000
+old  40: Bp:=&Bp;
+new  40: Bp:=10000;
+Enter value for bca: 10
+old  41: Bca:=&Bca;
+new  41: Bca:=10;
+Enter value for bpl: SAURAV
+old  42: Bpl:='&Bpl';
+new  42: Bpl:='SAURAV';
+Enter value for rid: L0009
+old  52: Rid:='&Rid';
+new  52: Rid:='L0009';
+Enter value for rd: 

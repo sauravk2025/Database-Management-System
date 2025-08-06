@@ -1,0 +1,241 @@
+
+insert into saurav values('shawn','cse-c','cs',3195,48,94);
+
+insert into saurav values('ashish','cse-a','cs',3171,44,98);
+
+insert into saurav values('himan','cse-b','cs',3182,49,90);
+
+insert into saurav values('alan','it','it',3164,43,80);
+
+
+
+ SELECT NAME FROM STUDENT WHERE MARKS>=ALL (SELECT MARKS FROM STUDENT WHERE CLASS='cse-c');
+
+
+SELECT * FROM STUDENT OFFSET 4-1 ROWS FETCH NEXT 1 ROW ONLY;
+
+SELECT * FROM STUDENT OFFSET 4-1 ROWS FETC
+
+SELECT * FROM (
+    SELECT STUDENT.*, ROWNUM rnum
+    FROM STUDENT
+    WHERE ROWNUM <= n
+)
+WHERE rnum = n;
+
+CREATE VIEW sau_vw AS (SELECT NAME,CLASS FROM STUDENT);
+
+
+CREATE OR REPLACE PROCEDURE t1 (d IN varchar2) AS
+
+c varchar2(20);
+ex exception;
+
+BEGIN
+
+select CLASS into c from student where DEPT='it';
+ 
+if c='it' then
+   update student set MARKS=MARKS-(0.05*MARKS) where class = c;
+else 
+  raise ex;
+end if;
+
+EXCEPTION
+
+when ex then
+  dbms_output.put_line('only reduce for it');
+when no_data_found then
+     dbms_output.put_line('no it');
+when others then
+  dbms_output.put_line('error');
+
+END;
+
+
+CREATE OR REPLACE PROCEDURE t2(a in number,b in number)
+as
+
+c number;
+ex exception;
+xx exception;
+
+BEGIN
+select a*b into c from dual;
+
+if c>100 then
+  raise ex;
+else
+  raise xx;
+end if ;
+
+EXCEPTION
+when ex then
+  dbms_output.put_line('hi');
+when xx then
+  dbms_output.put_line('hey');
+when no_data_found then
+     dbms_output.put_line('no it');
+when others then
+  dbms_output.put_line('error');
+
+END;
+/
+
+
+DECLARE
+a1 number;
+b1 number;
+begin
+a1:=&a1;
+b1:=&b1;
+t2(a1,b1);
+end;
+/
+
+
+
+
+CREATE FUNCTION t3 (a IN number) 
+
+RETURN varchar2 AS
+
+m varchar2(20);
+ex exception;
+
+BEGIN
+
+select name into m from student where marks=a;
+
+if a>80 then
+   dbms_output.put_line('good mark');
+    return m;
+else
+    raise ex;
+
+end if;
+
+EXCEPTION
+
+when ex then
+  dbms_output.put_line('bad mark');
+  return m;
+when no_data_found then
+     dbms_output.put_line('no it');
+     return 'invalid';
+when others then
+  dbms_output.put_line('error');
+    return 'invalid';
+
+
+END;
+/
+
+
+DECLARE
+a1 varchar2(20);
+b1 number;
+begin
+b1:=&b1;
+a1:=t3(b1);
+if a1='invalid' then
+  dbms_output.put_line('no one');
+else
+  dbms_output.put_line('MARKS OF ' ||a1|| ' is ' || b1);
+end if;
+end;
+/
+
+
+declare
+
+CURSOR c IS SELECT * FROM STUDENT WHERE MARKS>80 for update nowait ;
+
+c1 c%ROWTYPE;
+
+BEGIN
+ 
+	open c;
+	loop
+  		fetch c into c1;
+			exit when c%notfound;
+			if c1.dept='cs' then
+				update student set marks=marks-2 where current of c;
+			elsif c1.dept='it' then
+				update student set marks=marks+2 where current of c;
+			end if;
+	end loop;
+	close c;
+
+END;
+
+
+
+  DECLARE
+  CURSOR C IS SELECT * FROM STUDENT WHERE ROLL_NO>45 FOR UPDATE NOWAIT;
+  C1 C%ROWTYPE;
+  
+  BEGIN
+  
+  OPEN C;
+  LOOP
+    FETCH C INTO C1;
+	exit when C%notfound;
+        UPDATE STUDENT SET MARKS=100 WHERE CURRENT OF C;
+   END LOOP;
+  CLOSE C;
+ END;
+  
+
+
+declare
+
+CURSOR c IS SELECT * FROM STUDENT WHERE DEPT='cs' FOR UPDATE NOWAIT;
+
+c1 c%ROWTYPE;
+
+BEGIN
+ 
+	open c;
+	loop
+  		fetch c into c1;
+			exit when c%notfound;
+				update student set marks=13 where c1.DEPT='cs';
+	
+	end loop;
+	close c;
+
+END;
+
+
+CREATE TRIGGER t3
+ 
+before
+
+INSERT OR UPDATE
+
+ON STUDENT
+
+FOR EACH ROW
+
+WHEN ( NEW.DEPT='cs' )
+
+DECLARE
+ 
+c number:=0;
+
+BEGIN
+        select count(*) into c from student where dept='cs';
+	if c>=5 then
+		DBMS_OUTPUT.PUT_LINE('TRIGGGEEERRRR');
+		DBMS_OUTPUT.PUT_LINE('count is ' || c);
+	else
+		DBMS_OUTPUT.PUT_LINE(' notttt  TRIGGGEEERRRR');
+        end if;
+   
+END;
+/
+	
+ insert into student values('don','cse-b','cs',3166,1,93,5);
+
+

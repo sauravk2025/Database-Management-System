@@ -1,0 +1,168 @@
+ Triggers are stored programs, which are automatically executed or fired when some events occur. 
+
+--------------------------------------------------------------------------
+Triggers are, in fact, written to be executed in response to any of the following events −
+
+A database manipulation (DML) statement (DELETE, INSERT, or UPDATE);
+
+A database definition (DDL) statement (CREATE, ALTER, or DROP);
+
+A database operation (SERVERERROR, LOGON, LOGOFF, STARTUP, or SHUTDOWN
+
+
+--------------------------------------------------------------------------
+SYNTAX:
+
+CREATE [OR REPLACE ] TRIGGER trigger_name   − Creates or replaces an existing trigger with the trigger_name
+ 
+{BEFORE | AFTER | INSTEAD OF }       - when the trigger will be executed.   The INSTEAD OF clause is used for creating trigger on a view.
+
+{INSERT [OR] | UPDATE [OR] | DELETE}    - This specifies the DML operation.
+ 
+[OF col_name]    - This specifies the column name that will be updated.
+
+ON table_name  - his specifies the name of the table associated with the trigger.
+  
+[REFERENCING OLD AS o NEW AS n]   - This  allows  you to refer new and old values for various DML statements, such as INSERT, UPDATE, and DELETE.
+
+[FOR EACH ROW]   - he trigger will be executed for each row being affected.  Otherwise the trigger will execute just once when the SQL statement is executed, which is called a TABLE LEVEL TRIGGER
+
+WHEN (condition)    //NOT NECESSARY
+
+DECLARE 
+
+   Declaration-statements 
+
+BEGIN  
+
+   Executable-statements 
+
+EXCEPTION 
+
+   Exception-handling-statements 
+
+END;
+
+
+--------------------------------------------------------------------------
+
+WHEN SEPCIFYING 'NEW' WRITE       A:=A+:NEW.FINE
+
+IN QUERY WITH WHERE WRITE 'WHERE USER_ID=:NEW.USER_ID'
+--------------------------------------------------------------------------
+
+CREATE TRIGGER t3
+ 
+before
+
+INSERT OR UPDATE
+
+ON STUDENT
+
+FOR EACH ROW
+
+WHEN ( NEW.DEPT='cs' )
+
+DECLARE
+ 
+c number:=0;
+
+BEGIN
+        select count(*) into c from student where dept='cs';
+
+	c:=c+1; // since it is before trigger we need to increament c by 1 to include this conditon as well AS THIS TRIGGER WORKS ONLY (WHEN NEW.DEPT='CS')
+
+	if c>=5 then
+		DBMS_OUTPUT.PUT_LINE('MORE CS');
+	else
+		DBMS_OUTPUT.PUT_LINE(' LESS CS');
+        end if;
+   
+END;
+/
+	
+--------------------------------------------------------------------------
+
+BEFORE UPADTE OR  INSERT
+
+create trigger tr
+before update or insert
+on teacher
+for each row
+DECLARE
+  nm varchar2(20);
+  d date;
+  un varchar2(20);
+  no number;
+BEGIN
+	no:=:new.t_no;
+	nm:=:new.t_name;
+	select user into un from dual;
+	select sysdate into d from dual;
+	if(no > 0) then
+		insert into UP_T values(nm,un,d);
+		dbms_output.put_line('trigger');
+	end if;	
+END;
+/
+update teacher set t_name='sharukh' where t_name='saurav';
+insert into teacher values(678,'shobin',22000,'pgt');
+
+
+
+
+--------------------------------------------------------------------------
+
+TO CREATE A TRIGGER SUCH THAT NO UPDDATION IS MADE TO TABLE
+
+    create or replace trigger t1
+    before insert
+    on sau
+    for each row
+    declare
+    exx exception;
+    begin 
+    if :new.ssn < 90 then
+    	raise_application_error(-20001,'jafafsdf');
+    else
+	raise exx;
+    end if;
+   exception
+    when exx then 
+    	dbms_output.put_line('hiiiiiiii');
+    end;
+   /
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------- 

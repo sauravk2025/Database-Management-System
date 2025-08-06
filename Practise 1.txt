@@ -1,0 +1,137 @@
+create table saurav(u_id number primary key,name varchar2(20),mark number default 0,roll number check(roll>0 and roll<100),j_date date,constraint rck unique(roll));
+
+create table sau(r_no number primary key,name varchar2(20),addr varchar2(20),ssn number);
+
+insert into saurav values(3191,'saurav',100,46,date '2021-09-01');
+insert into saurav values(3190,'sanoy',99,45,date '2021-09-01');
+insert into saurav values(3194,'shaun',98,48,date '2021-09-01');
+insert into saurav values(3195,'shawn',98,49,date '2021-09-01');
+insert into saurav values(3170,'niranjan',99,14,date '2021-09-01');
+
+
+insert into sau values(46,'saurav','vadakara',123);
+
+insert into sau values(48,'shaun','thiruvalla',456);
+
+insert into sau values(45,'sanoy','kottayam',789);
+
+insert into sau values(49,'shawn','tvm',111);
+
+insert into sau values(14,'niranjan','cherthala',222);
+
+
+insert into sa values(21,'powell','chalakkudy',333);
+
+insert into savalues('3181','powell',97,21,date'2021-09-01');
+
+
+declare
+n number;
+begin
+	for i in 1.. 5 loop
+		n:=41+i;
+		insert into grp values('b',n);
+	end loop;
+end;
+/
+
+
+declare
+	n number;
+	nam varchar2(20);
+begin
+	n:=&n;
+	select name into nam from saurav where rownum<=n minus select name from saurav where rownum<=n-1;
+	dbms_output.put_line('name is ' || nam);
+end;
+/
+
+
+
+
+ select * from saurav where roll <any(select roll from saurav where roll>40);
+
+
+
+ select * from saurav where roll <=all(select roll from saurav where roll>40);
+
+
+create or replace procedure k(a in number) as
+
+
+
+
+
+
+create or replace trigger t1
+  before insert
+  on sau
+  for each row
+  declare
+exx exception;
+  begin 
+  if :new.ssn < 90 then
+   raise_application_error(-20001,'jafafsdf');
+  end if;
+exception
+	when exx then 
+		dbms_output.put_line('hiiiiiiii');
+  end;
+
+
+
+
+ declare
+ n number;
+ r number;
+ begin
+  select mark into n from saurav where mark=90;
+  select roll into r from saurav where mark=90;
+ dbms_output.put_line('mark ' || n);
+ dbms_output.put_line('roll ' || r);
+ end;
+ /
+	  
+
+  
+ create or replace trigger tr1
+ before
+ insert or delete or update
+ on sau
+ for each row
+ declare
+ begin
+	if :new.r_no>0 then
+		dbms_output.put_line('khasbdb');
+	end if;
+end;
+/
+ 
+create or replace function fr(n number) return number
+as
+exx exception;
+begin
+if n>90 then
+	dbms_output.put_line('woow');
+	return n;
+else
+	raise exx;
+end if;
+exception
+	when exx then
+		dbms_output.put_line('sakdb');
+		return 1;
+	when others then
+		dbms_output.put_line('4');
+end;
+/
+
+
+
+ declare 
+  n number;
+  begin
+    n:=fr(102);
+  end;
+/
+  

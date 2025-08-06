@@ -1,0 +1,350 @@
+FACTORIAL
+
+set serveroutput on;
+DECLARE
+n number;
+f number;
+a exception;
+BEGIN
+n:=&n;
+f:=1;
+if n=0 OR n=-2 then
+	raise a;
+elsif n=-1 then
+	raise a;
+else
+	for i in 1..n LOOP
+ 		f:=f*i;
+	END LOOP;
+	dbms_output.put_line('Factorial is ' || f);
+END if;
+EXCEPTION
+when a then
+	dbms_output.put_line('Factorial is 1');
+when others then
+	dbms_output.put_line('error');
+END;
+/
+
+------------------------------------------------------------------
+ARMSTRONG
+
+create table saurav (n integer,c integer,s integer,r integer,d integer,a integer);
+
+DECLARE
+n integer;
+s integer;
+c integer;
+r integer;
+a integer;
+d integer;
+f integer;
+BEGIN
+dbms_output.put_line('Enter the number');
+n:=&n;
+s:= n;
+a:= n;
+c:= 0;
+d:= 0;
+insert into saurav values(n,c,s,r,d,a);
+while n>0 loop
+    n:=n/10;
+    c:=c+1;
+end loop;
+insert into saurav values(n,c,s,r,d,a);
+dbms_output.put_line('count is ' || c);
+while s>0 loop
+    r:=mod(s,10);
+    d:=d+power(r,c);
+    s:=s/10;
+    f:=mod(s,2);
+    if f=0 AND s=0 then
+       s:=0;
+    elsif f=0 then
+       s:=s-1;
+    end if;
+    insert into saurav values(n,c,s,r,d,a);
+end loop;
+
+if d=a then
+    dbms_output.put_line('armstrong');
+else
+   dbms_output.put_line('not armstrong');
+   dbms_output.put_line('d is ' || d);
+   dbms_output.put_line('s is ' || s);
+   dbms_output.put_line('f is ' || f);
+  dbms_output.put_line('r is ' || r);
+  dbms_output.put_line('c is ' || c);
+end if;
+END;
+/
+
+ OR SIMPLE
+
+DECLARE
+n integer;
+s integer;
+c integer;
+r integer;
+a integer;
+f integer;
+
+BEGIN
+dbms_output.put_line('Enter the number');
+n:=&n;
+s:= 0;
+a:= n;
+c:= 0;
+
+c:=length(n);
+
+dbms_output.put_line('count is ' || c);
+
+for i in 1..c loop
+    r:=substr(n,i,1);
+    f:=power(r,c);
+    s:=s+f;
+end loop;
+
+if s=a then
+    dbms_output.put_line('armstrong');
+else
+   dbms_output.put_line('not armstrong');
+end if;
+END;
+/
+
+
+------------------------------------------------------------------
+AREA   
+
+  declare
+  a number(5,3);
+  p constant number(3,2):=3.14;
+  begin
+  for i in 1..5 loop
+     a:=p*i*i;
+     insert into area values(a,i);
+  end loop;
+  end;
+  /
+------------------------------------------------------------------
+
+REVERSE A STRING
+
+DECLARE
+str varchar2(20);
+a varchar2(20);
+b varchar2(20);
+l number;
+BEGIN
+dbms_output.put_line('Enter the string');
+str:='&str';
+l:=length(str);
+FOR i in reverse 1..l loop
+	a:=a||substr(str,i,1);
+END loop;
+FOR i in reverse 1..l loop
+	b:=b||substr(a,i,1);
+END loop;
+dbms_output.put_line('Reverse of string str : ' || a);
+dbms_output.put_line('Reverse of string a : ' || b);
+END;
+/
+------------------------------------------------------------------
+BANK
+
+ declare 
+ e exception;
+ n number;
+ c number;
+ d number;
+ begin
+ dbms_output.put_line('enter');
+ n:=&n;
+ select count(distinct(a)) into d from bank;
+   select b into c from bank  where a=n;
+   if c<50 then
+      raise e;
+   else
+      dbms_output.put_line('min balance '|| c);
+   end if;
+ exception
+ when e then
+     update bank set b=b-10 where a=n;
+ when others then
+    dbms_output.put_line('error');
+end;
+/
+
+------------------------------------------------------------------
+EVEN OR ODD
+
+declare
+n number;
+s number;
+begin 
+dbms_output.put_line('enter');
+n:=&n;
+s:=mod(n,2);
+if s=0 then
+ dbms_output.put_line('even');
+else
+  dbms_output.put_line('odd');
+end if;
+end;
+/
+------------------------------------------------------------------
+
+PRIME NUMBER
+
+declare
+n number;
+s number;
+flag number;
+begin
+dbms_output.put_line('enter');
+n:=&n;
+flag:=0;
+if n=1 then
+  dbms_output.put_line('prime');
+elsif n=2 then
+  dbms_output.put_line('prime');
+else
+ for i in 2..n-1 loop
+    s:=mod(n,i);
+    if s=0 then
+      flag:=1;
+      exit;
+   end if;
+ end loop;
+end if;
+if flag=0 then
+  dbms_output.put_line('prime');
+elsif flag=1 then
+  dbms_output.put_line('composite');
+end if;
+end;
+/
+------------------------------------------------------------------
+
+VOWEL
+
+declare
+ n varchar2(20);
+ flag number;
+ l number;
+begin
+ dbms_output.put_line('Enter');
+ n:=upper('&n'); // upper characters;
+ flag:=0;
+ l:=length(n);
+ for i in 1..l loop
+    if substr(n,i,1) in ('A','E','I','O','U') then
+         flag:=flag+1;
+    end if;
+ end loop;
+if flag=0 then
+    dbms_output.put_line('vowel is not');
+else
+   dbms_output.put_line('vowel');
+   dbms_output.put_line('count is '|| flag);
+end if;
+end;
+/
+------------------------------------------------------------------
+ 
+ SUM OF DIGITS
+
+ declare
+  n integer;
+  s integer;
+  r integer;
+ begin
+  n:='&n';
+  s:= 0;
+  while n>0 loop
+     r:=mod(n,10);
+     s:=s+r;
+     n:=n/10;
+  end loop;
+ dbms_output.put_line('sum is '||s);
+end; 
+ /
+
+------------------------------------------------------------------
+
+PERFECT NUMBER
+
+ declare 
+   n integer;
+   s integer;
+   f integer;
+ begin
+   n:=&n;
+   s:=0;
+   for i in 1..n-1 loop
+       f:=mod(n,i);
+       if f=0 then
+          s:=s+i;
+       end if;
+   end loop;
+   if s=n then
+      dbms_output.put_line('perfetc');
+   else
+      dbms_output.put_line('not');
+   end if;
+ end;
+  /
+------------------------------------------------------------------
+
+DECLARE
+n integer;
+s integer;
+c integer;
+r integer;
+a integer;
+f integer;
+
+BEGIN
+dbms_output.put_line('Enter the number');
+n:=&n;
+s:= 0;
+a:= n;
+c:= 0;
+
+c:=length(n);
+
+dbms_output.put_line('count is ' || c);
+
+for i in 1..c loop
+    r:=substr(n,i,1);
+    f:=power(r,c);
+    s:=s+f;
+end loop;
+
+if s=a then
+    dbms_output.put_line('armstrong');
+else
+   dbms_output.put_line('not armstrong');
+end if;
+END;
+/
+------------------------------------------------------------------
+COMPARE STRINGS
+
+declare
+n varchar2(20);
+s varchar2(20);
+begin
+n:='&n';
+s:='&s';
+if n=s then
+	dbms_output.put_line('same');
+end if;
+end;
+/
+
+------------------------------------------------------------------
+
+

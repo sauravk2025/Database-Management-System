@@ -1,0 +1,216 @@
+In PL/SQL, a cursor is like a pointer or a handle that helps manage the results of a SQL query.
+
+When you execute a SQL statement in Oracle, it creates a memory space called the "context area."
+This area contains all the information needed for processing the SQL statement, such as the number of rows processed.
+
+cursor is a way for PL/SQL to interact with this context area. 
+
+cursor holds the rows returned by sql statements.
+-----------------------------------------------------------------------------------------------------
+THIS SET OF ROWS CURSOR HOLDS - ACTIVE SET
+ -----------------------------------------------------------------------------------------------------
+Cursors in PL/SQL act as tools that help you handle the information retrieved from a database query
+-----------------------------------------------------------------------------------------------------
+There are two main types of cursors:
+
+Implicit Cursors:
+
+These are automatically created by Oracle whenever you execute a SQL statement in your PL/SQL code.
+You don't have to explicitly declare or manage these cursors;
+They are handled behind the scenes.
+WE CANNOT MANAGE THEM
+IN INSERT ,UPDATE ,DELETE STATEMENTS
+-----------------------------------------------------------------------------------------------------
+ATTRIBUTES OF IMPLICIT CURSORS
+
+%FOUND
+
+Returns TRUE if an INSERT, UPDATE, or DELETE statement affectS one or more rows or a SELECT INTO statement returned one or more rows. Otherwise, it returns FALSE.
+-----------------------------------------------------------------------------------------------------
+	
+%NOTFOUND
+
+The logical opposite of %FOUND. It returns TRUE if an INSERT, UPDATE, or DELETE statement affected no rows, or a SELECT INTO statement returned no rows. Otherwise, it returns FALSE.
+-----------------------------------------------------------------------------------------------------
+	
+%ISOPEN
+
+Always returns FALSE for implicit cursors, because Oracle closes the SQL cursor automatically after executing its associated SQL statement.
+-----------------------------------------------------------------------------------------------------
+	
+%ROWCOUNT
+
+Returns the number of rows affected by an INSERT, UPDATE, or DELETE statement, or returned by a SELECT INTO statement.
+-----------------------------------------------------------------------------------------------------
+%ROWTYPE
+
+In PL/SQL, you can use the %ROWTYPE attribute to declare a cursor variable whose fields correspond to the columns of a specific table or view. 
+-----------------------------------------------------------------------------------------------------
+Explicit Cursors:
+
+These are cursors that you explicitly define and manage in your PL/SQL code.
+IN SELECT STATEMENTS
+
+SYNTAX:
+
+DECLARE VARIABLES USING %TYPE;
+
+
+DECLARE CURSOR - CURSOR cursor_name IS QUERY //TO POINT CURSOR TO CONTEXT AREA WHICH HAVE THE RESULT OF QUERY
+BEGIN
+	OPEN CURSOR - OPEN cursor_name;
+	LOOP - to check each row of context area;
+		FETCH CURSOR - Fetch the cursor pointer and store values in variables through each iterartion
+	   		EXIT WHEN cursorname%NOTFOUND -exits loop when no more rows are found or desire row is not found
+	END LOOP 
+	CLOSE CURSOR
+END
+/
+-----------------------------------------------------------------------------------------------------
+
+EXAMPLE 1 - SELECT QUERY
+
+DECLARE 
+   c_id customers.id%type;  // C_ID TO HAVE SAME TYPE AS THAT OF CUSTOMERS.ID
+   c_name customers.name%type; 
+   c_addr customers.address%type; 
+   count integer;
+   CURSOR c_customers is 
+      SELECT id, name, address FROM customers; 
+BEGIN 
+   OPEN c_customers; 
+   LOOP 
+   FETCH c_customers into c_id, c_name, c_addr; 
+      EXIT WHEN c_customers%notfound; 
+      dbms_output.put_line(c_id || ' ' || c_name || ' ' || c_addr); 
+   END LOOP; 
+   count := c_customers % ROWCOUNT; //number of rows affectedx
+   CLOSE c_customers; 
+END; 
+/
+
+
+-----------------------------------------------------------------------------------------------------
+EXAMPLE 2 -SELECT QUERY
+
+DECLARE
+
+n student.name%type;
+m student.marks%type;
+
+CURSOR c IS SELECT NAME,MARKS FROM STUDENT;
+
+BEGIN
+ 
+	open c;
+	loop
+  		fetch c into n,m;
+			exit when c%notfound;
+			dbms_output.put_line('name is '||n||' mark is '||m);	
+	end loop;
+	close c;
+
+END;
+
+-----------------------------------------------------------------------------------------------------
+
+
+EXAMPLE 3-SELECT QUERY 
+
+DECLARE
+
+
+CURSOR c IS SELECT NAME,MARKS FROM STUDENT;
+
+c1 c%ROWTYPE;
+
+BEGIN
+ 
+	open c;
+	loop
+  		fetch c into c1;
+			exit when c%notfound;
+			dbms_output.put_line('name is '||c1.name||' mark is '||c1.marks);	
+	end loop;
+	close c;
+
+END;
+/
+-----------------------------------------------------------------------------------------------------
+WORKS ONLY IF YOU WANT TO UPDATE 1 ROW
+
+declare
+
+CURSOR c IS SELECT * FROM STUDENT ;
+
+c1 c%ROWTYPE;
+
+BEGIN
+ 
+	open c;
+	loop
+  		fetch c into c1;
+			exit when c%notfound;
+			update student set marks=10 where c1.dept='cs';
+	
+	end loop;
+	close c;
+
+END;
+
+
+
+-----------------------------------------------------------------------------------------------------
+FOR ANY NUMBER OF ROWS - UPDATE use if conditon , for update no wait,where current of c;
+
+declare
+
+CURSOR c IS SELECT * FROM STUDENT WHERE MARKS>80 for update no wait;
+
+c1 c%ROWTYPE;
+
+BEGIN
+ 
+	open c;
+	loop
+  		fetch c into c1;
+			exit when c%notfound;
+			if c1.dept='cs' then
+				update student set marks=marks-2 where current of c;
+			elsif c1.dept='it' then
+				update student set marks=marks+2 where current of c;
+			end if;
+	end loop;
+	close c;
+
+END;
+
+
+-----------------------------------------------------------------------------------------------------
+
+ c = SQL%ROWCOUNT;
+
+
+-----------------------------------------------------------------------------------------------------
+
+declare 
+cursor c is select * from sau for update nowait;
+c1 c%rowtype;
+cn number;
+begin
+open c;
+loop
+ fetch c into c1;
+   exit when c%notfound;
+   if c1.name='saurav' then
+      update sau set name='saurav k' where current of c;
+   end if;
+  cn:=c%rowcount;
+ dbms_output.put_line('count is '||cn);
+end loop;
+close c;
+end;
+/
+
+
+-----------------------------------------------------------------------------------------------------

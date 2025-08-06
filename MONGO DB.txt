@@ -1,0 +1,33 @@
+MONGO DB - HUmongoUS DB
+-----------------------------------------------------------------------------------------------------
+FEAUTERS
+
+OPEN SOURCE
+DOCUMENT BASED
+DOCUMENT BSON FORMAT
+STORED AS FIELD-VALUE PAIRS
+AUTOMATIC SCALING
+
+-----------------------------------------------------------------------------------------------------
+JSON - JAVASCRIPT OBJECT NOTATION
+BSON - BINARY JSON
+-----------------------------------------------------------------------------------------------------
+
+CRUD - CREATE ,READ,UPDATE,DELETE
+-----------------------------------------------------------------------------------------------------
+DDL
+
+show dbs - show all databases
+db.createCollection("collection_name") - create new databse
+use name_of_dbs - create dbs
+
+-----------------------------------------------------------------------------------------------------
+DML
+
+db.databsename.insert({'field1_name':"string",'field2_name':number});
+db.databsename.find({'fieldname':value});
+db.databsename.delete({'fieldname':value});
+db.databsename.update({'field':value},{$set{'field':value}});
+
+
+-----------------------------------------------------------------------------------------------------

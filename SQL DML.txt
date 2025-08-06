@@ -1,0 +1,214 @@
+DML - DATA MANIPULATION LANGUAGE
+
+------------------------------------------------------------------------
+COMMANDS - SELECT , INSERT ,DELETE ,UPDATE
+------------------------------------------------------------------------
+
+INSERT
+
+insert into tablename values(type in the order of columns);
+
+------------------------------------------------------------------------
+DELETE
+
+delete from tablename where condition
+
+------------------------------------------------------------------------
+
+SELECT
+ 
+select column_name/(*) from  tablename where condition order by tablename asc/desc
+
+DISPLAY ALL TABLES IN THE USER:  SELECT TABLE_NAME FROM USER_TABLES
+
+------------------------------------------------------------------------
+UPDATE
+
+update tablename set values where condition;
+------------------------------------------------------------------------
+
+Aggregate Functions
+
+• Average: avg
+
+• Minimum: min
+
+• Maximum: max
+
+• Total: sum
+
+• Count: count
+
+
+------------------------------------------------------------------------
+TO SELECT A CONDITION WHICH IS IN SAME COLUMN USE INTERSECT
+
+ SELECT AUTH_NO FROM BOOKS WHERE PUBLISHER='Pearson' intersect 
+ SELECT AUTH_NO FROM BOOKS WHERE PUBLISHER='MK'
+
+returns an author who has published with both PEARSON AND MK
+
+WE CANNOT USE AND HERE SINCE BOTH PEARSON AND MK ARE IN SAME COLUMN
+
+FOR TABLE
+
+UNION - IN CASE OF TABLE IT ACTS AS OR
+INTERSECT - IN CASE OF TABLE IT ACTS AS AND
+
+FOR ATTRIBUTES
+
+OR -
+AND -
+
+---------------------------------------------------------------------
+
+GROUP BY -USED IN KEYWORDS LIKE :for a particular ATTRIBUTE
+
+CREATE TABLE sales (
+    product VARCHAR(50),
+    salesperson VARCHAR(50),
+    amount INT
+);
+
+INSERT INTO sales (product, salesperson, amount)
+VALUES ('A', 'John', 100),
+       ('B', 'Alice', 150),
+       ('A', 'Bob', 200),
+       ('B', 'Alice', 120),
+       ('A', 'John', 80);
+```
+
+Now, let's say you want to know the total sales amount for each product.
+
+**Without GROUP BY:**
+You might initially query the entire table like this:
+
+```sql
+SELECT product, salesperson, amount
+FROM sales;
+```
+
+This would give you the raw data:
+
+```
+product | salesperson | amount
+--------|-------------|-------
+A       | John        | 100
+B       | Alice       | 150
+A       | Bob         | 200
+B       | Alice       | 120
+A       | John        | 80
+```
+
+**With GROUP BY:**
+Now, if you want to know the total sales amount for each product, you'd use the `GROUP BY` clause.
+
+```sql
+SELECT product, SUM(amount) AS total_amount
+FROM sales
+GROUP BY product;
+```
+product | total_amount
+--------|--------------
+A       | 380
+B       | 270
+
+
+In simple terms, the `GROUP BY` clause is used to group rows in a table based on the values in one or more columns.
+
+HAVING Clause apply restrictions on group
+
+WHERE Clause cannot be used in groups
+
+------------------------------------------------------------------------
+
+SUBQUERY SHOULD ALWAYS RETURN A SINGLE ROW;
+)
+ALL - COMPARE WITH ALL VALUES AND DISPLAYS RESULT WHICH SATISFY ALL THE CONDITON;(IF QUESTION HAS ALL KEYWORD USE THIS)
+
+ANY - DISPLAY RESULT IF ANY CONDITION IS SATISFIED;(IF QUESTION HAS ANY KEYWORD USE THIS)
+
+NOT - COMPARE SINGLE VALUE WITH SINGLE VALUE
+
+IN - COMPARE A SINGLE VALUE WITH A LIST OF VALUES
+
+NOT IN -COMPARE A SINGLE VALUE WITH A LIST OF VALUES
+
+BETWEEN - TO SEPCIFY A RANGE OF VALUES
+
+SELECT N ROWS = SELECT * FROM TABLE WHERE ROWNUM<=N;
+
+SELECT NTH ROW -
+
+    SELECT * FROM (
+    SELECT tablename.*, ROWNUM rnum
+    FROM tablename
+    WHERE ROWNUM <= n )
+WHERE rnum = n;
+
+  USING ROWNUM = SELECT * FROM ( WHAT WAY YOU WANT TO SELECT ) HOW MANY ROWS YOU WANT TO SELECT;
+
+
+SELECT NTH ROW - select * from saurav minus select * from saurav where rownum< (select count(*) from saurav);
+
+
+
+ SELECT N ROWS USING ORDER BY CLAUSE : select * from (select * from student order by roll_no desc) where rownum<=3;
+
+------------------------------------------------------------------------
+JOIN
+
+JOIN 2 TABLES
+
+SELECT table1.columns, table 2.columns FROM table1 JOIN table 2 ON
+table1.column N = table 2.column M WHERE CONDITION
+
+JOIN 3 TABLES
+
+SELECT table1.columns, table 2.columns FROM table1 JOIN table 2 ON
+table1.column = table 2.column  JOIN TABLE3 ON TABLE1.COLUMN N = TABLE3.COLUMN O WHERE CONDITION; //IF DATA REQUIRED REQUIRES CONNECTING 3 TABLES
+
+NATURAL JOIN 
+
+SELECT * FROM TABLE 1 NATURAL JOIN TABLE 2 (JOINS ATTRIBUTES OF TABLE BASED ON COMMON VALUES);
+
+------------------------------------------------------------------------
+
+QURERIES
+
+DISPLAY ALL TABLES IN THE USER:  SELECT TABLE_NAME FROM USER_TABLES
+
+COLUMN ALIASING: SELECT ATTRIBUTE AS NEWNAME FROM TABLE;
+
+DISPLAY AS SINGLE COLUMN :SELECT Dname || Loc AS Department FROM DEPT;
+
+FOR SELECTING UNIQUE ITEMS :SELECT DISTINCT Salary FROM EMP;
+
+NOT NULL : SELECT NAME FROM STUDENT WHERE DEPT IS NOT NULL;
+
+BETWEEN - SELECT EID, Name FROM EMP WHERE Hire-Date BETWEEN (5-Feb-2001,1-Jan- 2006)
+
+<> ,NOT - NOT EQUAL TO
+
+ENDING WITH av- SELECT NAME FROM STUDENT WHERE NAME LIKE '%av';
+
+SECOND ALPHABET a-SELECT NAME FROM STUDENT WHERE NAME LIKE '_a%';
+
+Logical Operators (AND, OR , NOT)
+
+Relational Operators (=, >, <. >=, =<, <>)
+
+Sorting of tuples/rows (ASC, DESC- ORDER BY)
+
+SELECT SUM(FINE) FROM RETURN WHERE TO_CHAR(DUE_DATE,'mm')=TO_CHAR(SYSDATE,'mm'); //TO_CHAR(DUE_DATE,'mm') - extract month
+select sum(fine) from retrun where extract(month from due_date)=extract(month from sysdate);
+
+SELECT SUM(FINE) FROM RETURN WHERE DUE_DATE<=DATE '2023-10-01'; COMPARE DATE ;
+
+
+SELECT TABLE1.ATTRIBUTE , COUNT/AVG..(TABLE1.ATTRIBUTE) FROM TABLE1 JOIN TABLE2 ON TABLE1.ATTRIBUTE = TABLE2.ATTRIBUTE WHERE TABLE1.ATTRIBUTE CONDITION GROUP BY TABLE1.CONDITION;
+
+
+select student.dept,count(student.class) from student join readers on readers.user_id=student.rid where student.marks is not null group by student.dept;
+
+

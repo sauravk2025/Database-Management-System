@@ -1,0 +1,28 @@
+show dbs - show all databases
+use nameofdbs - create dbs
+
+db.saurav.insert({'id' :37010,'city' :"ADAMS",'name':"saurav"})
+db.saurav.find()
+db.saurav.findOne()
+db.saurav.find({'id':37010})
+
+db.saurav.update({'id':37010},{$set:{'name':"suna john"}})
+
+db.saurav.deleteOne({field:value})  //STRING IN QUOTE
+MONGO DB
+
+db.employees.insert({ 'emp': "Harry", 'sal': 20000, 'address': { 'street': "asb12", 'city': "lll", 'country': "US" }, 'dept': "A" })
+db.employees.insert({ 'emp': "Tom", 'sal': 25000, 'address': { 'street': "ak112", 'city': "lll", 'country': "US" }, 'dept': "B" })
+db.employees.insert({ 'emp': "Tim", 'sal': 80000, 'address': { 'street': "asb12", 'city': "kkk", 'country': "UK" }, 'dept': "A" })
+db.employees.insert({'emp': "Pam", 'sal': 65000, 'address': { 'street': "al12", 'city': "ooo", 'country': "SA" }, 'dept': "C" })
+db.employees.insert({'emp': "Mary", 'sal': 40000, 'address': { 'street': "a4512", 'city': "tttt", 'country': "SA" }, 'dept': "A" })
+db.employees.insert({ 'emp': "Lily", 'sal': 75000, 'address': {'street': "ak11", 'city': "yyy", 'country': "UK" }, 'dept': "C" })
+db.employees.insert({ 'emp': "Sal", 'sal': 55000, 'address': { 'street': "at11", 'city': "yyl", 'country': "UK" }, 'dept': "B" })
+
+db.employees.insert({ 'emp': "Saurav", 'sal': 200000, 'address': { 'street': "Lalaland", 'city': "NY", 'country': "India" }, 'dept': "TOP" })
+
+db.employees.find({sal:{$gt:50000},dept:"C"});
+
+db.employees.update({dept:"B"},{$set:{email:["a1@gmail.com","aa1@gmail.com"]}},{multi:true});
+db.employees.find({dept:"B"});
+db.employees.remove({$and:[{$or:[{dept:"A"},{dept:"B"}]},{sal:{$lt:30000}}]});

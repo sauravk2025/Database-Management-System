@@ -1,0 +1,83 @@
+ insert into teacher values(456'saurav',30000,'pgt',date '2012-03-08',date '1990-03-09');
+ insert into teacher values(789,'shaun',10000,'bgt',date '2010-03-08',date '1980-03-09');
+ insert into teacher values(012,'shawn',20000,'pgt',date '2011-03-08',date '1991-03-09');
+ insert into teacher values(345,'sanoy',25000,'agt',date '2009-03-08',date '1987-03-09');
+ 
+
+DECLARE
+
+amt number;
+a number;
+b number;
+ex exception;
+
+BEGIN
+
+a:=&a;
+
+select salary into amt from teacher where t_no=a;
+
+if(amt < 10000) then
+	b:=(0.1*amt);
+	dbms_output.put_line('bonus is '||b);
+elsif (amt >=10000 AND amt < 20000) then
+	b:=(0.2*amt);
+	dbms_output.put_line('bonus is '||b);
+elsif (amt >=20000 AND amt <= 25000) then
+	b:=(0.25*amt);
+	dbms_output.put_line('bonus is '||b);
+elsif (amt >25000) then
+	b:=(0.3*amt);
+	dbms_output.put_line('bonus is '||b);
+else
+	raise ex;
+end if;
+
+EXCEPTION
+
+when ex then
+	dbms_output.put_line('not assigned');
+when others then
+	dbms_output.put_line('error');
+END;
+/
+
+
+
+create trigger tr
+before update or insert
+on teacher
+for each row
+DECLARE
+  d date;
+  n date;
+BEGIN
+	d:=:new.j_date;
+	select sysdate into n from dual;
+	if(d >= n) then
+		dbms_output.put_line('trigger');
+	end if;	
+END;
+/
+update teacher set t_name='sharukh' where t_name='saurav';
+insert into teacher values(678,'shobin',22000,'pgt',date '2024-01-10',date '1970-01-10');
+
+declare
+d1 date;
+d2 date;
+cursor c is select t_name,b_date from teacher ;
+c1 c%ROWTYPE;
+
+begin
+  open c;
+    loop
+ 	fetch c into c1;
+		exit when c%notfound;
+      if (2024-to_char(c1.b_date,'yyyy')<=60) then
+	dbms_output.put_line('name : '||c1.t_name);
+      end if;
+  end loop;
+  close c;
+end;
+/
+	

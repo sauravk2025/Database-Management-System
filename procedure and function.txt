@@ -1,0 +1,273 @@
+Functions − These subprograms return a single value; mainly used to compute and return a value.Consist of pl/sql statements
+
+Procedures − These subprograms do not return a value directly; mainly used to perform an action.Consist of pl/sql statements
+           - each procedure has its own unique name
+           - can have return statemnt to return control to the calling block but not return any values
+
+-----------------------------------------------------------------------------------------------------
+
+IN - giving input to subprogram from main program (parameter)
+   - value cannot be changed in subprogram
+ 
+OUT - getting output from subprogram
+    - value can be changed inside subprogram
+
+IS - when procedure is nested in some other block USED IN PACKAGE
+
+AS - when procedure is stand alone
+
+IF DATATYPE IS VARCHAR2 ONLY GIVE THAT IN IN STATEMENT . NO NEED TO SPECIFY SIZE
+
+IT CAN HAVE NO PARAMETER AS WELL
+
+HAS NO DECLARE KEYWORD ;
+-----------------------------------------------------------------------------------------------------
+PROCEDURE SYNTAX
+
+CREATE:
+
+CREATE [OR REPLACE] PROCEDURE procedure_name 
+[(parameter_name in which we take data [IN | OUT | IN OUT] datatype ] 
+{IS | AS}  
+
+<declaration>
+
+BEGIN 
+  < procedure_body >
+
+EXCEPTION
+  <body> 
+
+END; 
+
+
+DROP:
+
+DROP PROCEDURE procedure_name;
+
+-----------------------------------------------------------------------------------------------------
+
+EXAMPLE 1 :PROCEDURE
+
+
+CREATE OR REPLACE PROCEDURE t1 (d IN varchar2) AS  
+
+c varchar2(20);
+ex exception;
+
+BEGIN
+
+select CLASS into c from student where DEPT='it';
+ 
+if c='it' then
+   update student set MARKS=MARKS-(0.05*MARKS) where class = c;
+else 
+  raise ex;
+end if;
+
+EXCEPTION
+
+when ex then
+  dbms_output.put_line('only reduce for it');
+when no_data_found then
+     dbms_output.put_line('no it');
+when others then
+  dbms_output.put_line('error');
+
+END;
+/
+
+
+DECLARE
+dep varchar2(20);
+BEGIN 
+dep:='&dep';
+t1(dep);
+END;
+/
+
+
+-----------------------------------------------------------------------------------------------------
+
+EXAMPLE 2 :PROCEDURE
+
+
+CREATE OR REPLACE PROCEDURE t2(a in number,b in number)
+as
+
+c number;
+ex exception;
+xx exception;
+
+BEGIN
+select a*b into c from dual;
+
+if c>100 then
+  raise ex;
+else
+  raise xx;
+end if ;
+
+EXCEPTION
+when ex then
+  dbms_output.put_line('hi');
+when xx then
+  dbms_output.put_line('hey');
+when no_data_found then
+     dbms_output.put_line('no it');
+when others then
+  dbms_output.put_line('error');
+
+END;
+/
+
+
+DECLARE
+a1 number;
+b1 number;
+begin
+a1:=&a1;
+b1:=&b1;
+t2(a1,b1);
+end;
+/
+
+-----------------------------------------------------------------------------------------------------
+FUNCTION SYNTAX
+
+CREATE:
+
+CREATE [OR REPLACE] FUNCTION function_name 
+
+[(parameter_name in which we get data which is passed  [IN | OUT | IN OUT]  datatype ] 
+
+RETURN  return_datatype 
+
+{IS | AS} 
+
+<declaration>
+
+BEGIN 
+
+   < function_body > 
+
+EXCEPTION
+
+ <body>
+
+END ;
+
+
+
+DROP:
+
+DROP FUNCTION function_name;
+
+
+-----------------------------------------------------------------------------------------------------
+EXAMPLE 1:FUNCTION
+
+
+
+CREATE FUNCTION t3 (a IN varchar2) 
+
+RETURN number AS
+
+m number;
+ex exception;
+
+BEGIN
+
+select marks into m from student where name=a;
+
+if m>80 then
+   
+    return m;
+else
+    raise ex;
+
+end if;
+
+EXCEPTION
+
+when ex then
+  dbms_output.put_line('bad mark');
+  return m;
+when no_data_found then
+     dbms_output.put_line('no it');
+when others then
+  dbms_output.put_line('error');
+
+
+END;
+/
+
+
+DECLARE
+a1 varchar2(20);
+b1 number;
+begin
+a1:='&a1';
+b1:=t3(a1);
+dbms_output.put_line('MARKS OF ' ||a1|| ' is ' || b1);
+end;
+/
+
+
+-----------------------------------------------------------------------------------------------------
+
+EXAMPLE 2:FUNCTION
+
+CREATE FUNCTION t3 (a IN number) 
+
+RETURN varchar2 AS
+
+m varchar2(20);
+ex exception;
+
+BEGIN
+
+select name into m from student where marks=a;
+
+if a>80 then
+   dbms_output.put_line('good mark');
+    return m;
+else
+    raise ex;
+
+end if;
+
+EXCEPTION
+
+when ex then
+  dbms_output.put_line('bad mark');
+  return m;
+when no_data_found then
+     dbms_output.put_line('no it');
+     return 'invalid';
+when others then
+  dbms_output.put_line('error');
+    return 'invalid';
+
+
+END;
+/
+
+
+DECLARE
+a1 varchar2(20);
+b1 number;
+begin
+b1:=&b1;
+a1:=t3(b1);
+if a1='invalid' then
+  dbms_output.put_line('no one');
+else
+  dbms_output.put_line('MARKS OF ' ||a1|| ' is ' || b1);
+end if;
+end;
+/
+
+-----------------------------------------------------------------------------------------------------
+
+

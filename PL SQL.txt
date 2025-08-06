@@ -1,0 +1,138 @@
+
+PL SQL - PROCEDURAL LANGUAGE EXTENSION TO SQL
+
+plsql - combination of sql and procedural feautures of programming language.
+
+CAN EXECUTE NUMBER OF QUERIES IN 1 BLOCK USING SINGLE COMMAND
+
+PL SQL STATEMENTS CAN BE CREATED AS PROCCEDURES,PACKAGES,FUNCTIONS,TRIGGERS ETC
+
+basic unit - block
+1 block has 3 part - declaration,begin,execution,exception handling ,end
+
+DECLARE
+This section starts with the keyword DECLARE. It is an optional section and defines all variables, cursors, subprograms, and other elements to be used in the program.
+
+
+EXCEPTION HANDLING
+This section is enclosed between the keywords BEGIN and END and it is a mandatory section. It consists of the executable PL/SQL statements of the program. It should have at least one executable line of code, which may be just a NULL command to indicate that nothing should be executed
+
+Exception Handling
+This section starts with the keyword EXCEPTION. This optional section contains exception(s) that handle errors in the program.OPTIONAL .HANDLE RUN TIME ERROR
+
+:=Assignment operator
+
+DECLARE 
+   a integer := 10; 
+   b number := 20; 
+   d varchar2(20):= 'name';
+   c integer; 
+   f real; //FLOATING NUMBERS
+BEGIN 
+   c := a + b; 
+   dbms_output.put_line('Value of c: ' || c); 
+   f := 70.0/3.0; 
+   dbms_output.put_line('Value of f: ' || f); 
+END; 
+/  
+
+ TO READ INPUT FROM USER
+    d:='&d';//read string
+    a:= &a;//read number
+    a:= :a;-- instead of "&" use ":" here 
+    b:= :b;
+
+
+
+FOR DECIMAL NUMBERS YOU CAN ALSO GIVE: a number(4,2); // TOTAL 4 DIGITS INCLUDING DECIMAL .2 digits after decimal
+To declare constant : a constant number(2,2):= 3.14;
+ DBMS_OUTPUT.PUT_LINE('Current Value: ' || a);
+
+
+
+
+IF ELSE
+
+if conditon then
+	statement
+	 if condition then
+		statement
+	elsif condition then
+		statement
+	else
+		statement
+	end if 
+else
+ 	 statement
+end if
+
+
+LOOPS
+
+LOOP
+	statements
+	if conditon then //loop termination conditon
+		exit;
+ 	else
+		statement;
+	end if;
+	END LOOP;
+
+FOR LOOP
+
+  FOR i IN 1..3 LOOP  
+      FOR j IN 1..3 LOOP 
+         dbms_output.put_line('i is: '|| i || ' and j is: ' || j); 
+      END LOOP 
+   END LOOP;
+
+WHILE LOOP
+
+WHILE condition1 LOOP 
+   sequence_of_statements1 
+   WHILE condition2 LOOP 
+      sequence_of_statements2 
+   END LOOP; 
+END LOOP;  
+
+EXAMPLE
+
+DECLARE
+BEGIN
+  FOR a IN REVERSE 20..10 LOOP
+    DBMS_OUTPUT.PUT_LINE('Current Value: ' || a);
+  END LOOP;
+END;
+/
+
+Current Value: 20
+Current Value: 19
+Current Value: 18
+Current Value: 17
+Current Value: 16
+Current Value: 15
+Current Value: 14
+Current Value: 13
+Current Value: 12
+Current Value: 11
+Current Value: 10
+
+
+
+EXCEPTION HANDLING
+
+DECLARE 
+   exception_name EXCEPTION; 
+BEGIN 
+   IF condition THEN 
+      RAISE exception_name; 
+   END IF; 
+EXCEPTION 
+   WHEN exception_name THEN //EXCEPTION OF SPECIFIC TYPE WE CREATED 
+     statement; 
+    WHEN no_data_found THEN  //IF NO SUCH DATA IS FOUND
+      dbms_output.put_line('No such customer!'); 
+   WHEN others THEN //ANY OTHER EXCEPTION OCCURS
+      dbms_output.put_line('Error!');
+END; 
+
